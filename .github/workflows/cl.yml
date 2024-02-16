@@ -1,4 +1,4 @@
-name: CI
+name: Publish NPM Package
 
 on: [push, workflow_dispatch]
 
@@ -20,11 +20,17 @@ jobs:
       - name: Run tests with Karma
         run: npm run test
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./coverage/
-          flags: unittests
-          name: codecov-umbrella
-          fail_ci_if_error: true
+      - name: Build
+        run: npm run build
+
+      - name: Bump version and create tag
+        run: |
+          git config --global user.name 'isamxus'
+          git config --global user.email '834775778@qq.com'
+          npm version patch -m "Bump version to %s [skip ci]" # 自动递增补丁版本号并提交
+          git push --follow-tags
+
+      - name: Publish to npm
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
