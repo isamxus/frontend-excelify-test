@@ -28,9 +28,8 @@ jobs:
           git config --global user.name 'isamxus'
           git config --global user.email '834775778@qq.com'
           npm version patch -m "Bump version to %s [skip ci]" # 自动递增补丁版本号并提交
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/isamxus/frontend-excelify-test.git
           git push --follow-tags
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish to npm
         run: npm publish
